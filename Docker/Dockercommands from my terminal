@@ -1,0 +1,341 @@
+root@dockerhost:~# history
+1 clear
+2 docker images
+3 mkdir -p /opt/docker_base_images
+4 cd /opt/docker_base_images
+5 hostnamectl
+6 hostname
+7 apt install debootstrap
+8 cat /etc/os-release
+9 debootstrap jammy jammy > /dev/null
+10 ls
+11 cd jammy/
+12 ls
+13 cd etc
+14 cat os-release
+15 cd ~
+16 clear
+17 docker images
+18 ls /opt/docker_base_images/jammy/
+19 cd /opt/docker_base_images/jammy/
+20 cd ./..
+21 pwd
+22 ls
+23 sudo tar -C jammy -c . | docker import - jammy
+24 docker images
+25 docker pull ubuntu:latest
+26 docker images
+27 docker run -it ubuntu:latest
+28 docker ps
+29 docker ps -a
+30 docker run -it ubuntu:latest
+31 docker ps
+32 clear
+33 docker images
+34 docker rmi -f $(docker images)
+35 clear
+36 docker images
+37 docker rmi 2767693332e5
+38 docker ps
+39 docker stop 880048be2869
+40 docker rmi 2767693332e5
+41 docker rmi -f $(docker images)
+42 docker images
+43 docker ps -a
+44 docker rm -f $(docker ps -aq)
+45 clear
+46 docker ps -a
+47 docker images
+48 clear
+49 ls
+50 docker images
+51 nano Dockerfile
+52 clear
+53 docker images
+54 docker ps
+55 docker pull ubuntu
+56 docker pull httpd
+57 docker image
+58 docker image inspect httpd
+59 docker images
+60 docker pull httpd
+61 docker images
+62 docker image inspect httpd
+63 docker run httpd /bin/bash -c "cat /etc/*release"
+64 docker ps
+65 docker run -it httpd
+66 docker run -it httpd /bin/bash
+67 docker image inspect httpd
+68 docker inspect http
+69 docker inspect httpd
+70 docker inspect --format='{{.Os}}' httpd
+71 docker inspect --format='{{.Config.ExposedPorts}}' nginx
+72 docker inspect --format='{{.Config.ExposedPorts}}' httpd
+73 docker inspect --format='{{.Cmd}}' httpd
+74 docker inspect --format='{{.ContainerConfig.Cmd}}' httpd
+75 docker inspect --format='{{.Config.WorkingDir}}' httpd
+76 clear
+77 docker image inspect httpd
+78 cleae
+79 clear
+80 docker inspect --format='{{index .RepoDigests 0}}' $IMAGE
+81 docker image inspect --format='{{index .RepoDigests 0}}' $IMAGE
+82 docker image inspect --format='{{.RepoDigests 0}}' $IMAGE
+83 docker images --digests
+84 docker run httpd /bin/bash -c "cat /etc/*release"
+85 clear
+86 docker run -it tomcat:9-alpine cat /etc/os-release
+87 clear
+88 docker run -it tomcat:9 cat /etc/os-release
+89 docker run -it tomcat:latest cat /etc/os-release
+90 docker images
+91 docker image inspect tomcat:9
+92 docker inspect --format='{{.Config.TOMCAT_VERSION}}' tomcat:9
+93 docker inspect --format='{{.Config.Env.TOMCAT_VERSION}}' tomcat:9
+94 docker inspect --format='{{.Config.Env}}' tomcat:9
+95 docker inspect --format '{{ index (index .Config.Env) 1 }}' tomcat:9
+96 docker inspect --format '{{ index (index .Config.Env) 11 }}' tomcat:9
+97 docker ps
+98 docker run -it tomcat:latest find / -type d -name "*tomcat*"
+99 docker run -it tomcat:latest find / find / -type f -name version.sh
+100 docker run -it tomcat:latest find / /bin/bash
+101 docker run -it tomcat:latest /bin/bash
+102 docker run -it tomcat:latest bin/version.sh
+103 docker images
+104 docker image inspect tomcat:9
+105 docker inspect --format='{{.Config.WorkingDir}}' tomcat:9
+106 clear
+107 docker run -it tomcat:latest bin/version.sh
+108 clear
+109 docker run -it tomcat:9-alpine cat /etc/os-release
+110 docker run -it tomcat:latest cat /etc/os-release
+111 clear
+112 docker inspect --format='{{.Config.WorkingDir}}' tomcat:latest
+113 history
+114 docker image inspect tomcat:latest
+115 history
+116 docker inspect --format '{{ index (index .Config.Env) 1 }}' tomcat:latest
+117 docker inspect --format '{{ index (index .Config.Env) 11 }}' tomcat:latest
+118 clear
+119 docker run -itd tomcat
+120 docker ps
+121 docker inspect 9b6fcc0002f8
+122 docker ps
+123 docker inspect --format='{{.NetworkSettings.IPAddress}}' lucid_mahavira
+124 docker inspect --format='{{json .NetworkSettings}}' lucid_mahavira
+125 docker inspect --format='{{table .NetworkSettings}}' lucid_mahavira
+126 docker inspect --format='{{text .NetworkSettings}}' lucid_mahavira
+127 docker inspect --format='{{taml .NetworkSettings}}' lucid_mahavira
+128 docker inspect --format='{{yaml .NetworkSettings}}' lucid_mahavira
+129 docker inspect --format='{{json .NetworkSettings}}' lucid_mahavira
+130 docker inspect -s lucid_mahavira
+131 docker inspect -s 9b6fcc0002f8
+132 docker ps
+133 docker stop lucid_mahavir
+134 docker container stop lucid_mahavir
+135 docker container stop 9b6fcc0002f8
+136 docker ps
+137 docker ps -a
+138 docker rm -f $(docker ps -aq)
+139 docker ps -a
+140 clear
+141 docker rmi -f $(docker images)
+142 clear
+143 docker images
+144 clear
+145 docker --version
+146 docker images
+147 docker ps
+148 docker ps -a
+149 cat /etc/os-release
+150 clear
+151 whoami
+152 mkdir -p /opt/docker_base_images
+153 pwd
+154 cd /opt/docker_base_images
+155 ls
+156 rm -rf jammy/
+157 clear
+158 ls
+159 apt install debootstrap
+160 clear
+161 debootstarp jammy jammy > /dev/null
+162 debootstrap jammy jammy > /dev/null
+163 ls
+164 cd jammy/
+165 ls
+166 cat /etc/os-release
+167 cd ./..
+168 ls
+169 ls -lat
+170 clear
+171 docker images
+172 tar -C jammy -c . | docker import - jammy
+173 docker images
+174 docker inspect image bb72afa705d9
+175 clear
+176 docker images
+177 docker pull centos
+178 docker images
+179 docker inspect image e6a0117ec169
+180 docker pull centos:centos6
+181 clear
+182 cd ~
+183 pwd
+184 docker pull centos:6.10
+185 docker pull centos:6
+186 docker pull centos
+187 docker pull centos:7
+188 docker images
+189 docker image inspect c9a1fdca3387
+190 clear
+191 docker pull httpd
+192 docker images
+193 docker run httpd
+194 docker ps -a
+195 clear
+196 docker run httpd
+197 clear
+198 docker run -d httpd
+199 docker ps
+200 docker images
+201*
+202 clear
+203 docker image inspect httpd
+204 docker inspect --format '{{ index (index .Config.Env) 2 }}' httpd
+205 docker inspect --format '{{ index (index .Config.Env) 0 }}' httpd
+206 clear
+207 docker pull tomcat
+208 clear
+209 docker images
+210 docker pull tomcat:9
+211 docker images
+212 clea
+213 clear
+214 docker image inspect tomcat:latest
+215 docker pull tomcat:jdk17-temurin
+216 clear
+217 docker pull tomcat:jdk11-temurin-jammy
+218 docker images
+219 docker image inspect tomcat:9
+220 docker images
+221 docker image inspect tomcat:jdk17-temurin
+222 clear
+223 docker pull tomcat:9.0.76-jre17
+224 docker image inspect tomcat:9.0.76-jre17
+225 history
+226 clear
+227 docker ps
+228 docker image --format='{{.NetworkSettings.IpAddress}}' dazzling_spence
+229 docker inspect --format='{{.NetworkSettings.IPAddress}}' dazzling_spence
+230 docker inspect container dazzling_spence
+231 docker inspect --format='{{.NetworkSettings.IPAddress}}' dazzling_spencehistory
+232 history
+233 clear
+234 docker ps
+235 docker images
+236 docker image inspect httpd
+237 docker inspect --format='{{.Os}}' httpd
+238 docker inspect --format='{{.Config.ExposedPorts}}' httpd
+239 clear
+240 docker run -it httpd /bin/bash
+241 docker ps -a
+242 clear
+243 docker run -it httpd cat /etc/os-relese
+244 docker run -it httpd cat /etc/os-release
+245 clear
+246 docker images
+247 docker image inspect httpd
+248 docker images
+249 clear
+250 docker images
+251 docker images --digests
+252 clear
+253 docker images
+254 docker images --digests
+255 cleqr
+256 clear
+257 docker run httpd /bin/bash
+258 docker ps
+259 docker ps -a
+260 docker run -t httpd /bin/bash
+261 clear
+262 docker run -it httpd /bin/bash
+263 docker ps
+264 docker stop container 9784da0fd264
+265 docker ps
+266 docker ps -a
+267 docker rm 08e64ab5cf98
+268 docker ps
+269 docker psdocker ps -a
+270 clear
+271 docker ps -a
+272 docker rm ae7eeaed9f64
+273 docker ps -a
+274 docker ps -aq
+275 docker rm -f $(docker ps -aq)
+276 docker ps -a
+277 clear
+278 docker images
+279 docker rmi centos:latest
+280 docker images
+281 docker rmi $(docker images | awk 'NR>1 {print $3}')
+282 docker images
+283 docker rmi $(docker images | awk 'NR>1 {print $3}')
+284 docker ps a
+285 docker ps -aa
+286 docker ps -a
+287 docker ps
+288 docker rmi -f $(docker images | awk 'NR>1 {print $3}')
+289 docker images
+290 clear
+291 docker run -it httpd /bin/bash
+292 docker images
+293 clea
+294 rclear
+295 cler
+296 docker images
+297 docker -s -a
+298 docker ps -a
+299 docker image
+300 docker images
+301 clear
+302 docker run -it httpd /bin/bash
+303 docker ps
+304 pwd
+305 docker inpect --format='{{.Config.WorkingDir}}' httpd
+306 docker inspect --format='{{.Config.WorkingDir}}' httpd
+307 docker image inspect httpd
+308 clear
+309 docker run -it tomcat
+310 clear
+311 docker run -itd tomcat
+312 docker run -it tomcat /bin/bash
+313 docker ps
+314 clear
+315 docker ps
+316 docker attach 8ecb3f0825c9
+317 docker attach dbd8d6aed103
+318 clear
+319 docker ps
+320 docker images
+321 docker run -itd tomcat:latest
+322 docker ps
+323 docker attach 44c951e2d25b
+324 clear
+325 docker ps
+326 docker run -it tomcat:latest /bin/bash
+327 docker run -it tomcat:latest bin/version.sh
+328 docker ps
+329 docker ps -a
+330 clear
+331 docker inspect --format='{{ index (index .Config.Env)1 }}' tomcat:latest
+332 docker inspect --format='{{ index (index .Config.Env) 1 }}' tomcat:latest
+333 docker inspect --format='{{ index (index .Config.Env) 2 }}' tomcat:latest
+334 docker inspect --format='{{ index (index .Config.Env) 11 }}' tomcat:latest
+335 docker pull httpd
+336 docker inspect --format='{{ index (index .Config.Env) 1 }}' httpd:latest
+337 docker inspect --format='{{ index (index .Config.Env) 2 }}' httpd:latest
+338 docker imagest inspect tomcat:latest
+339 docker image inspect tomcat:latest
+340 history
