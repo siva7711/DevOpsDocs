@@ -1,0 +1,112 @@
+docker images    // List the images
+docker ps -a     // list the containers
+docker ps -aq    // list only container_id
+docker rm -f $(docker ps -aq) //remove all containers
+docker ps -a
+docker images
+docker rmi $(docker images) //reomve all images
+docker image inspect <image_id> // gives detailed information about the image
+docker run <imageid>    //  create container and exit
+docker run -d <imageid>  // create container with attached mode. 
+
+###### Creating Dockerfile
+nano Dockerfile
+******
+FROM centos
+LABEL maintainer=siva version=1.0
+******* (ctrl+o <enter> ctrl+x)
+docker build -t centos-siva .  //create image using Dockerfile (.) from here takes current directory and Dockerfile.
+docker images    // list the images  (you can identify centos-siva Image)
+docker run centos-siva (or) imageid  // run the container using the above Image but Nothing to do. It exited, just went away.
+*********************
+Will do something, will create new Dockerfile
+FROM ubuntu:18.04
+LABEL maintainer=siva version=1.0
+RUN apt-get update
+RUN apt-get install -y apache2
+RUN apt-get install -y apache2-utils
+EXPOSE 80
+CMD ["apache2ctl", "-D", "FOREGROUND"]   // apache2ctl -D FOREGROUND can be directly run in ubuntu, this format is applicablr for Dockerfile.
+                                         // this is Container operation while performing docker run. above all comands comes under Dockerimage.
+****************************************(ctrl+o <enter> ctrl+x)
+docker build -t ubuntu-siva .     // it executes all RUN commands it did not run EXPOSE and CMD.
+docker images     // list the images  (you can identify ubuntu-siva Image)
+docker run ubuntu-siva    // docker run in hyjaking mode of u r server, ctrl+c wont work , the only way to come out is connect again and stop the container.
+                           // A docker container can run in attached mode(you can run commands inside the container)
+                         // detached mode.
+docker run -i -t ubuntu-siva   // -i accept my input from -t my terminal interactively talking
+docker run -it ubuntu-siva     // same effect ctrl+c to come out.
+docker run -it ubuntu-siva /bin/bash   // when u run a container interactive talk and /bin/bash will overwrite the CMD of Dockerfile
+                                       // /bin/bash is the last command to excecute. i will be in the container.
+                                       //root@vagrant:~# docker run -i -t ubuntu-siva /bin/bash
+                                       //root@fd7aaf074ba7:/#      here u r inside the container
+root@fd7aaf074ba7:/# hostname
+fd7aaf074ba7
+root@fd7aaf074ba7:/# cat /etc/os-release
+NAME="Ubuntu"
+VERSION="18.04.6 LTS (Bionic Beaver)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 18.04.6 LTS"
+VERSION_ID="18.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=bionic
+UBUNTU_CODENAME=bionic
+root@fd7aaf074ba7:/#
+*****************************************above are the with in the container detail about hostname and OS details.
+service apache2 status      // it won't run because /bin/bash replaced CMD of Dockerfile
+exit                        // container exits, better do ctrl+p and ctrl+q to signout gracefully with out shutting down the container
+*****docker run image | docker run -it image | docker run -itd image  // different ways to run container
+docker stop <containerid>   // to stop the container
+docker ps   // list the running container
+docker ps -a  // list the exited containers
+docker rm -f $(docker ps -aq)  // delete the exited containers)
+docker run -itd ubuntu-siva    // creates container in detached mode, whenever u want u can attach.
+                               // In detached mode it will generate container lengthy one.
+                               // while using docker ps it will give concatenate containerid it will show only 12letters.
+docker ps    // it is showing my docker up and running backend.
+######################### in case of prompt width is more 
+ls -lat
+nano .bashrc
+export PS1="\W $"
+######################### // if you want to chk running container with out logging in I mean without attaching
+docker exec <containerid> /usr/bin/top -b
+docker exec <containerid> df -H
+######################### // to enter into the container
+docker attache <containerid>    // it will attache to the container.
+service apache2 status
+docker inspect <containerid>    // gives container details
+apt-mark hold apache2           // hold the upgrade of apache2
+apt list --upgradable           // gives upgradable list
+apt-mark showhold               // list the holded upgrade list
+#######################################################################TO create multiple users in windows
+ c:/users/administrator> net user
+net user siva 123456789aA# /add      // adds siva user password is 123456789aA#
+FOR /L %i IN(1,1,100) do net user siva%i 123456789aA# /add    // add 100 siva users
+FOR /L %i IN(1,1,100) do net user siva%i /delete    // delete 100 siva users password is not required to delete
+###########################################################################
+docker can't create 100 containers
+dockerswarm can  similarly kubernetes and mesos
+kubernetes is opensource container orchestration software.
+kubernetes advantages my desired containers 100 so current containers are 90, for some reason 10 containers down. 
+the variation of current and desired 10 containers are automatically up. load balancing is automatic, containers are creating automatic.
+reseilance is automatic
+#########################################################################
+
+###########################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
