@@ -28,6 +28,12 @@ RUN apt-get install -y apache2-utils
 EXPOSE 80
 CMD ["apache2ctl", "-D", "FOREGROUND"]   // apache2ctl -D FOREGROUND can be directly run in ubuntu, this format is applicablr for Dockerfile.
                                          // this is Container operation while performing docker run. above all comands comes under Dockerimage.
+CMD ["/bin/bash", "-c", "<multiplecommands> //multiple commands separated by ; (semicolon)
+ENTRYPOINT                                  // entrypoint and cmd are same, cmd can be overwrite from terminal and entrypoint if fixed, can't overwrite.
+WORKDIR                                     // Specify working directory
+PATH                                        // Specify the path
+COPY                                        // to copy files from local to specific path or directory
+
 ****************************************(ctrl+o <enter> ctrl+x)
 docker build -t ubuntu-siva .     // it executes all RUN commands it did not run EXPOSE and CMD.
 docker images     // list the images  (you can identify ubuntu-siva Image)
@@ -40,6 +46,8 @@ docker run -it ubuntu-siva /bin/bash   // when u run a container interactive tal
                                        // /bin/bash is the last command to excecute. i will be in the container.
                                        //root@vagrant:~# docker run -i -t ubuntu-siva /bin/bash
                                        //root@fd7aaf074ba7:/#      here u r inside the container
+docker run -it --name <name of the container> -p <containerport>:<systemport> <imagename> /bin/bash
+
 root@fd7aaf074ba7:/# hostname
 fd7aaf074ba7
 root@fd7aaf074ba7:/# cat /etc/os-release
