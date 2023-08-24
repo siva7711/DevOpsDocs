@@ -11,38 +11,12 @@ docker rm -f <containerID>
 docker rm -f $(docker ps -aq)
 docker rmi <imageID/Name>
 docker rmi -f $(docker images)
-Once docker is installed we can see the version:
-To see the list of available images on our host:
-To see active containers or containers that are running:
-To see all containers including running or exited:
-1
-2
+docker --version    //Once docker is installed we can see the version:
+docker images       //To see the list of available images on our host:
+docker ps           //To see active containers or containers that are running:
+docker ps -a        //To see all containers including running or exited:
 root@ubuntu22:~# docker --version
 Docker version 23.0.3, build 3e7cbfd
-1
-2
-3
-4
-5
-6
-root@ubuntu22:~# docker images
-REPOSITORY TAG IMAGE ID CREATED SIZE
-website-ssl latest 26a6015f3619 26 hours ago 291MB
-website 1.0 2d7bde687665 27 hours ago 239MB
-ubuntu/apache2 latest edd92437b7eb 3 weeks ago 179MB
-ubuntu latest 08d22c0ceb15 5 weeks ago 77.8MB
-1
-2
-3
-root@ubuntu22:~# docker ps
-CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS 
-af14a5dce9b0 website-ssl "apache2-foreground" 18 hours ago Up 18 hours 0.0.0.0:80->80/tcp, :::80->80/tc
-1
-2
-3
-root@ubuntu22:~# docker ps -a
-CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS 
-aa57b8ddd861 ubuntu "/bin/bash" 9 minutes ago Exited (127) 5 minutes ago 
 Stop and Start a Container:
 Running containers in attached mode:
 We get the shell of the container
