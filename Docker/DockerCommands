@@ -1,0 +1,119 @@
+Docker Cmds
+Basic Commands
+docker --version
+docker search <image/image:tag>
+docker pull <image/image:tag>
+docker images
+docker ps
+docker ps -a
+docker rm <containerID>
+docker rm -f <containerID>
+docker rm -f $(docker ps -aq)
+docker rmi <imageID/Name>
+docker rmi -f $(docker images)
+Once docker is installed we can see the version:
+To see the list of available images on our host:
+To see active containers or containers that are running:
+To see all containers including running or exited:
+1
+2
+root@ubuntu22:~# docker --version
+Docker version 23.0.3, build 3e7cbfd
+1
+2
+3
+4
+5
+6
+root@ubuntu22:~# docker images
+REPOSITORY TAG IMAGE ID CREATED SIZE
+website-ssl latest 26a6015f3619 26 hours ago 291MB
+website 1.0 2d7bde687665 27 hours ago 239MB
+ubuntu/apache2 latest edd92437b7eb 3 weeks ago 179MB
+ubuntu latest 08d22c0ceb15 5 weeks ago 77.8MB
+1
+2
+3
+root@ubuntu22:~# docker ps
+CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS 
+af14a5dce9b0 website-ssl "apache2-foreground" 18 hours ago Up 18 hours 0.0.0.0:80->80/tcp, :::80->80/tc
+1
+2
+3
+root@ubuntu22:~# docker ps -a
+CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS 
+aa57b8ddd861 ubuntu "/bin/bash" 9 minutes ago Exited (127) 5 minutes ago 
+Stop and Start a Container:
+Running containers in attached mode:
+We get the shell of the container
+You can see that we are now inside the container.
+To confirm find the container os version: cat /etc/os-release
+Come out of container:
+There are 2 ways:
+1. exit will get you of the container and also exits the container
+2. Control p , Control q
+Verify with docker ps
+Removing a container:
+Before removing a container you ensure the container is stopped.
+You can use docker stop <containerID>
+Running containers in attached mode:
+In Detached mode we don’t get the shell of the container. But the container still run in the back.
+Observe the difference between:
+docker run -itd --name c1 ubuntu
+docker run -d --name c2 ubuntu
+4
+5
+af14a5dce9b0 website-ssl "apache2-foreground" 18 hours ago Up 21 seconds 0.0.0.0:80->80/t
+1
+2
+docker stop af14a5dce9b0
+docker start af14a5dce9b0
+1
+2
+root@ubuntu22:~# docker run -it ubuntu
+root@5d1274eb7a19:/#
+1
+2
+3
+docker rm <containerID>
+docker rm -f <containerID>
+docker rm -f $(docker ps -aq)
+1
+2
+root@ubuntu22:~# docker run -itd ubuntu
+669e377f2e1a7bb596730a2e4b7352f49d62ea3425bb35ff5cc42878e5ae4510
+Giving a name to the container:
+Attaching to a container:
+To attach to a container firstly the container should be in running state.
+You again get the shell of the container.
+Docker version
+List images
+Pull image from docker hub
+Inspect image
+Run a container
+List containers running
+List all containers
+Run a container in attached mode and access bash shell
+Exit the continer without stopping it
+Run a container in detached mode
+Running a command remotely on a container
+1 docker run --name test-container ubuntu
+1
+2
+3
+4
+root@ubuntu22:~# docker start aa57b8ddd861
+aa57b8ddd861
+root@ubuntu22:~# docker attach aa57b8ddd861
+root@aa57b8ddd861:/#
+1 docker --version
+1 docker images
+1 docker pull debian
+1 docker image inspect debian
+1 docker run debian
+1 docker ps
+1 docker ps -a
+1 docker run -i -t debian /bin/bash
+1 Control+p Control+q
+1 docker run -d httpd
+1 docker exec 04bd6e58dae1 env
