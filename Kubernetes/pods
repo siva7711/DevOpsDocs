@@ -1,0 +1,78 @@
+kubectl run <pod name> --image=nginx
+kubectl get pods
+
+#### through declarative way through YAML script
+vim test.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test2
+spec:
+  containers:
+  - name: test2
+    image: nginx
+
+kubectl apply -f test.yaml --dry-run
+kubectl apply -f test.yaml
+
+kubectl get pods
+##you can observe pod got created with the container of nginx image
+kubectl exec -it test --bash    ## to enter into container
+kubectl exec -it test -c <containername> -- bash  # in case of multiple containers
+
+#### LABELS, SELECTERS, REPLICASETS
+
+# with in kubenetes u can bind two objects by using label and selector
+# if you delete the pods, it won't comeback because pod itself does't have highavailability, for this we will use replicaset (it has two feilds 1. desired no.of replicas 2. actual no.of replicas
+# 1     1  if the running pod deleted, immedeately controllers are creating pod to reach desired.
+# for to apply the above we need to label the pod and selector
+
+#### spec for the replicaset  (imparative way not possible only declarative way) - I will use YAML
+sudo nano rs1.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: rs1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: rs1
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: rs1
+        image: nginx
+    
+kubectl apply -f rs1.yaml --dry-run
+kubectl apply -f rs1.yaml 
+kubectl api-resources  ## to identify the short cuts
+######## WORK AROUND
+root@vagrant:~/pod# kubectl get rs
+NAME   DESIRED   CURRENT   READY   AGE
+rs1    2         2         2       87s
+root@vagrant:~/pod# kubectl get pods
+NAME        READY   STATUS    RESTARTS   AGE
+rs1-9sjw6   1/1     Running   0          108s
+rs1-t64pf   1/1     Running   0          108s
+test        1/1     Running   1          18h
+test2       1/1     Running   0          175m
+root@vagrant:~/pod# kubectl delete pods rs1-9sjw6
+pod "rs1-9sjw6" deleted
+root@vagrant:~/pod# kubectl get pods
+NAME        READY   STATUS    RESTARTS   AGE
+rs1-6764w   1/1     Running   0          12s
+rs1-t64pf   1/1     Running   0          3m31s
+test        1/1     Running   1          18h
+test2       1/1     Running   0          177m
+root@vagrant:~/pod#
+############
+
+
+
+
