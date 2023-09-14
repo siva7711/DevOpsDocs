@@ -72,6 +72,69 @@ test        1/1     Running   1          18h
 test2       1/1     Running   0          177m
 root@vagrant:~/pod#
 ############
+kubectl scale --help    
+kubectl scale --replicas=3 rs/rs1  ## to scale up the replicas
+
+##### REPLICA SET
+# It is a set base selector, where as replication controller as equality based selectors
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test2
+  labels:
+    app: paytm
+spec:
+  containers:
+  - name: test2
+    image: nginx
+
+################
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: rs1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: paytm
+  template:
+    metadata:
+      name: rs1
+      labels:
+        app: paytm
+    spec:
+      containers:
+      - name: rs1
+        image: nginx
+# in the above case it will create two replicas by considering already existing pod of same label, it will not work for all objects.
+kubectl run test5 --image=nginx --dry-run -o yaml > test5.yaml  # create pod spec from imparative.
+kubectl apply -f test5.yaml
+###########
+kubectl get nodes
+NAME     STATUS   ROLES                  AGE     VERSION
+master   Ready    control-plane,master   3d      v1.21.9
+node01   Ready    <none>                 2d23h   v1.21.9
+node02   Ready    <none>                 2d23h   v1.21.9
+
+### to give a valid role for nodes
+kubectl label nodes node01 node-role.kubernetes.io/worker=worker
+
+NAME     STATUS   ROLES                  AGE     VERSION
+master   Ready    control-plane,master   3d      v1.21.9
+node01   Ready    worker                 2d23h   v1.21.9
+node02   Ready    <none>                 2d23h   v1.21.9
+
+
+
+
+
+
+
+
+
 
 
 
