@@ -241,7 +241,267 @@ kubectl rollout restart deploy/fb  # to restart the deploy with out any modifica
 # only pods are created in the nodes. remaining all like (deploymen, rs, services) are not creating in nodes. those are store in the EDCT to manage the pods.
 # different types of services 1. ClusterIP, 2. Nodeport, 3. Loadbalancer, 4. ExternalIP/ExternalName
 # we will use above for the type of incoming traffic.
+root@client:~/pods# kubectl create svc --help
+Create a service using a specified subcommand.
 
+Aliases:
+service, svc
+
+Available Commands:
+  clusterip      Create a ClusterIP service
+  externalname   Create an ExternalName service
+  loadbalancer   Create a LoadBalancer service
+  nodeport       Create a NodePort service
+
+Usage:
+  kubectl create service [flags] [options]
+
+Use "kubectl <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+root@client:~/pods# kubectl create svc clusterip --help
+Create a ClusterIP service with the specified name.
+
+Examples:
+  # Create a new ClusterIP service named my-cs
+  kubectl create service clusterip my-cs --tcp=5678:8080
+
+  # Create a new ClusterIP service named my-cs (in headless mode)
+  kubectl create service clusterip my-cs --clusterip="None"
+
+Options:
+    --allow-missing-template-keys=true:
+        If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to
+        golang and jsonpath output formats.
+
+    --clusterip='':
+        Assign your own ClusterIP or set to 'None' for a 'headless' service (no loadbalancing).
+
+    --dry-run='none':
+        Must be "none", "server", or "client". If client strategy, only print the object that would be sent, without
+        sending it. If server strategy, submit server-side request without persisting the resource.
+
+    --field-manager='kubectl-create':
+        Name of the manager used to track field ownership.
+
+    -o, --output='':
+        Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath,
+        jsonpath-as-json, jsonpath-file).
+
+    --save-config=false:
+        If true, the configuration of current object will be saved in its annotation. Otherwise, the annotation will
+        be unchanged. This flag is useful when you want to perform kubectl apply on this object in the future.
+
+    --show-managed-fields=false:
+        If true, keep the managedFields when printing objects in JSON or YAML format.
+
+    --tcp=[]:
+        Port pairs can be specified as '<port>:<targetPort>'.
+
+    --template='':
+        Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format
+        is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+
+    --validate='strict':
+        Must be one of: strict (or true), warn, ignore (or false).              "true" or "strict" will use a schema to validate
+        the input and fail the request if invalid. It will perform server side validation if ServerSideFieldValidation
+        is enabled on the api-server, but will fall back to less reliable client-side validation if not.                "warn" will
+        warn about unknown or duplicate fields without blocking the request if server-side field validation is enabled
+        on the API server, and behave as "ignore" otherwise.            "false" or "ignore" will not perform any schema
+        validation, silently dropping any unknown or duplicate fields.
+
+Usage:
+  kubectl create service clusterip NAME [--tcp=<port>:<targetPort>] [--dry-run=server|client|none] [options]
+
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+root@client:~/pods#
+root@client:~/pods# kubectl expose --help
+Expose a resource as a new Kubernetes service.
+
+ Looks up a deployment, service, replica set, replication controller or pod by name and uses the selector for that
+resource as the selector for a new service on the specified port. A deployment or replica set will be exposed as a
+service only if its selector is convertible to a selector that service supports, i.e. when the selector contains only
+the matchLabels component. Note that if no port is specified via --port and the exposed resource has multiple ports, all
+will be re-used by the new service. Also if no labels are specified, the new service will re-use the labels from the
+resource it exposes.
+
+ Possible resources include (case insensitive):
+
+ pod (po), service (svc), replicationcontroller (rc), deployment (deploy), replicaset (rs)
+
+Examples:
+  # Create a service for a replicated nginx, which serves on port 80 and connects to the containers on port 8000
+  kubectl expose rc nginx --port=80 --target-port=8000
+
+  # Create a service for a replication controller identified by type and name specified in "nginx-controller.yaml",
+which serves on port 80 and connects to the containers on port 8000
+  kubectl expose -f nginx-controller.yaml --port=80 --target-port=8000
+
+  # Create a service for a pod valid-pod, which serves on port 444 with the name "frontend"
+  kubectl expose pod valid-pod --port=444 --name=frontend
+
+  # Create a second service based on the above service, exposing the container port 8443 as port 443 with the name
+"nginx-https"
+  kubectl expose service nginx --port=443 --target-port=8443 --name=nginx-https
+
+  # Create a service for a replicated streaming application on port 4100 balancing UDP traffic and named 'video-stream'.
+  kubectl expose rc streamer --port=4100 --protocol=UDP --name=video-stream
+
+  # Create a service for a replicated nginx using replica set, which serves on port 80 and connects to the containers on
+port 8000
+  kubectl expose rs nginx --port=80 --target-port=8000
+
+  # Create a service for an nginx deployment, which serves on port 80 and connects to the containers on port 8000
+  kubectl expose deployment nginx --port=80 --target-port=8000
+
+Options:
+    --allow-missing-template-keys=true:
+        If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to
+        golang and jsonpath output formats.
+
+    --cluster-ip='':
+        ClusterIP to be assigned to the service. Leave empty to auto-allocate, or set to 'None' to create a headless
+        service.
+
+    --dry-run='none':
+        Must be "none", "server", or "client". If client strategy, only print the object that would be sent, without
+        sending it. If server strategy, submit server-side request without persisting the resource.
+
+    --external-ip='':
+        Additional external IP address (not managed by Kubernetes) to accept for the service. If this IP is routed to
+        a node, the service can be accessed by this IP in addition to its generated service IP.
+
+    --field-manager='kubectl-expose':
+        Name of the manager used to track field ownership.
+
+    -f, --filename=[]:
+        Filename, directory, or URL to files identifying the resource to expose a service
+
+    -k, --kustomize='':
+        Process the kustomization directory. This flag can't be used together with -f or -R.
+
+    -l, --labels='':
+        Labels to apply to the service created by this call.
+
+    --load-balancer-ip='':
+        IP to assign to the LoadBalancer. If empty, an ephemeral IP will be created and used (cloud-provider
+        specific).
+
+    --name='':
+        The name for the newly created object.
+
+    -o, --output='':
+        Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath,
+        jsonpath-as-json, jsonpath-file).
+
+    --override-type='merge':
+        The method used to override the generated object: json, merge, or strategic.
+
+    --overrides='':
+        An inline JSON override for the generated object. If this is non-empty, it is used to override the generated
+        object. Requires that the object supply a valid apiVersion field.
+
+    --port='':
+        The port that the service should serve on. Copied from the resource being exposed, if unspecified
+
+    --protocol='':
+        The network protocol for the service to be created. Default is 'TCP'.
+
+    -R, --recursive=false:
+        Process the directory used in -f, --filename recursively. Useful when you want to manage related manifests
+        organized within the same directory.
+
+    --save-config=false:
+        If true, the configuration of current object will be saved in its annotation. Otherwise, the annotation will
+        be unchanged. This flag is useful when you want to perform kubectl apply on this object in the future.
+
+    --selector='':
+        A label selector to use for this service. Only equality-based selector requirements are supported. If empty
+        (the default) infer the selector from the replication controller or replica set.)
+
+    --session-affinity='':
+        If non-empty, set the session affinity for the service to this; legal values: 'None', 'ClientIP'
+
+    --show-managed-fields=false:
+        If true, keep the managedFields when printing objects in JSON or YAML format.
+
+    --target-port='':
+        Name or number for the port on the container that the service should direct traffic to. Optional.
+
+    --template='':
+        Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format
+        is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+
+    --type='':
+        Type for this service: ClusterIP, NodePort, LoadBalancer, or ExternalName. Default is 'ClusterIP'.
+
+Usage:
+  kubectl expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP|SCTP] [--target-port=number-or-name]
+[--name=name] [--external-ip=external-ip-of-service] [--type=type] [options]
+
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+root@client:~/pods#
+root@client:~/pods# kubectl expose deploy amazon --port=80 --target-port:8080 --dry-run -o yaml > amazonsvc.yaml
+error: unknown flag: --target-port:8080
+See 'kubectl expose --help' for usage.
+root@client:~/pods# kubectl expose deploy amazon --port=80 --target-port=8080 --dry-run -o yaml > amazonsvc.yaml
+W0610 02:46:49.697006   23536 helpers.go:636] --dry-run is deprecated and can be replaced with --dry-run=client.
+root@client:~/pods# vi amazonsvc.yaml
+root@client:~/pods# vi amazonsvc.yaml
+root@client:~/pods#
+root@client:~/pods# kubectl get pods -l app=amazon
+NAME                      READY   STATUS    RESTARTS   AGE
+amazon-5dc8f97497-8864c   1/1     Running   0          24m
+amazon-5dc8f97497-98c4f   1/1     Running   0          24m
+amazon-5dc8f97497-g4sw2   1/1     Running   0          24m
+amazon-5dc8f97497-lqr56   1/1     Running   0          24m
+root@client:~/pods# vi amazonsvc.yaml
+root@client:~/pods# kubectl apply -f amazonsvc.yaml
+service/amazon created
+root@client:~/pods# kubectl get svc
+NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+amazon       ClusterIP   10.108.8.207   <none>        80/TCP    12s
+kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP   4d
+root@client:~/pods# kubectl get svc -o wide
+NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+amazon       ClusterIP   10.108.8.207   <none>        80/TCP    54s   app=amazon
+kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP   4d    <none>
+root@client:~/pods# kubectl describe svc amazon
+Name:              amazon
+Namespace:         default
+Labels:            app=amazon
+Annotations:       <none>
+Selector:          app=amazon
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.108.8.207
+IPs:               10.108.8.207
+Port:              <unset>  80/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.36.0.2:8080,10.36.0.3:8080,10.44.0.2:8080 + 1 more...
+Session Affinity:  None
+Events:            <none>
+root@client:~/pods#
+root@client:~/pods# kubectl get ep
+NAME         ENDPOINTS                                                  AGE
+amazon       10.36.0.2:8080,10.36.0.3:8080,10.44.0.2:8080 + 1 more...   4m46s
+kubernetes   192.168.56.171:6443                                        4d
+root@client:~/pods# kubectl get pods -o wide
+NAME                      READY   STATUS    RESTARTS   AGE     IP          NODE     NOMINATED NODE   READINESS GATES
+amazon-5dc8f97497-8864c   1/1     Running   0          30m     10.44.0.6   node01   <none>           <none>
+amazon-5dc8f97497-98c4f   1/1     Running   0          30m     10.36.0.2   node02   <none>           <none>
+amazon-5dc8f97497-g4sw2   1/1     Running   0          30m     10.44.0.2   node01   <none>           <none>
+amazon-5dc8f97497-lqr56   1/1     Running   0          30m     10.36.0.3   node02   <none>           <none>
+myntra-5fdb76bbc5-5rzsd   1/1     Running   0          23h     10.36.0.5   node02   <none>           <none>
+myntra-5fdb76bbc5-f5vck   1/1     Running   0          23h     10.44.0.5   node01   <none>           <none>
+myntra-5fdb76bbc5-hb7qb   1/1     Running   0          23h     10.36.0.6   node02   <none>           <none>
+myntra-5fdb76bbc5-x4rln   1/1     Running   0          23h     10.44.0.4   node01   <none>           <none>
+paytm-689bf5d44c-smd9r    1/1     Running   0          24h     10.36.0.4   node02   <none>           <none>
+test                      1/1     Running   0          3d23h   10.44.0.1   node01   <none>           <none>
+test2                     1/1     Running   0          3d23h   10.36.0.1   node02   <none>           <none>
+test5                     1/1     Running   0          2d23h   10.44.0.3   node01   <none>           <none>
+root@client:~/pods#
+root@client:~/pods#
 
 
 
