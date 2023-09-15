@@ -127,6 +127,125 @@ master   Ready    control-plane,master   3d      v1.21.9
 node01   Ready    worker                 2d23h   v1.21.9
 node02   Ready    <none>                 2d23h   v1.21.9
 
+# If replicaset provides high availability why deployment.
+# on daily base we will create different release means different versions of images.
+# deployement is going to create RS by default and RS is will create pods by default
+kubectl create deploy paytm --image=nginx --dry-run
+####### WORK AROUND
+root@vagrant:~/pod# kubectl create deploy paytm --image=nginx
+deployment.apps/paytm created
+root@vagrant:~/pod# ls
+rs1.yaml  test2.yaml  test3.yaml  test5.yaml
+root@vagrant:~/pod# kubectl get deploy
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+paytm   1/1     1            1           16s
+root@vagrant:~/pod# kubectl get deploy,rs,po
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/paytm   1/1     1            1           25s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/paytm-689bf5d44c   1         1         1       25s
+replicaset.apps/rs1                3         3         3       10h
+
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/paytm-689bf5d44c-t5qgr   1/1     Running   0          25s
+pod/rs1-76nxk                1/1     Running   1          10h
+pod/rs1-p9mkf                1/1     Running   1          10h
+pod/rs1-q8wft                1/1     Running   1          10h
+pod/test                     1/1     Running   2          35h
+pod/test2                    1/1     Running   1          11h
+pod/test5                    1/1     Running   1          10h
+############## we can create spec from imparative way
+kubectl create deploy amazon --image=nginx --dry-run -o yaml > amazon.yaml
+### declarative way of deployment
+sudo nano facebook.yaml
+############content
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fb
+  labels:
+    app: fb
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: fb
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      name: fb
+      labels:
+        app: fb
+    spec:
+      containers:
+      - name: fb
+        image: nginx:stable-perl
+
+######
+root@vagrant:~/pod# kubectl apply -f facebook.yaml
+deployment.apps/fb created
+root@vagrant:~/pod# kubectl get depoy,rs,po -o wide
+error: the server doesn't have a resource type "depoy"
+root@vagrant:~/pod# kubectl get deploy,rs,po -o wide
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES              SELECTOR
+deployment.apps/fb      0/4     4            0           31s   fb           nginx:stable-perl   app=fb
+deployment.apps/paytm   1/1     1            1           28m   nginx        nginx               app=paytm
+
+NAME                               DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES              SELECTOR
+replicaset.apps/fb-5bbcf65bdc      4         4         0       31s   fb           nginx:stable-perl   app=fb,pod-template-hash=5bbcf65bdc
+replicaset.apps/paytm-689bf5d44c   1         1         1       28m   nginx        nginx               app=paytm,pod-template-hash=689bf5d44c
+replicaset.apps/rs1                3         3         3       10h   rs1          nginx               app=paytm
+
+NAME                         READY   STATUS              RESTARTS   AGE   IP          NODE     NOMINATED NODE   READINESS GATES
+pod/fb-5bbcf65bdc-2mbdq      0/1     ContainerCreating   0          31s   <none>      node02   <none>           <none>
+pod/fb-5bbcf65bdc-hfgwd      0/1     ContainerCreating   0          31s   <none>      node02   <none>           <none>
+pod/fb-5bbcf65bdc-m7w9s      0/1     ContainerCreating   0          31s   <none>      node01   <none>           <none>
+pod/fb-5bbcf65bdc-nqxm5      0/1     ContainerCreating   0          31s   <none>      node01   <none>           <none>
+pod/paytm-689bf5d44c-t5qgr   1/1     Running             0          28m   10.36.0.4   node02   <none>           <none>
+pod/rs1-76nxk                1/1     Running             1          10h   10.36.0.1   node02   <none>           <none>
+pod/rs1-p9mkf                1/1     Running             1          10h   10.44.0.2   node01   <none>           <none>
+pod/rs1-q8wft                1/1     Running             1          10h   10.44.0.3   node01   <none>           <none>
+pod/test                     1/1     Running             2          36h   10.44.0.1   node01   <none>           <none>
+pod/test2                    1/1     Running             1          11h   10.36.0.2   node02   <none>           <none>
+pod/test5                    1/1     Running             1          10h   10.36.0.3   node02   <none>           <none>
+##############
+strategy:
+ rollingupdate
+   maxsurge
+   maxunavailable
+ recreate
+# it is going to create new pods once those are up it is going to delete the old.
+maxunavailable 1 means out of 4 3 available.
+maxsurge 1 means 4+1 out of 5 3 (4-1 of maxunavailable)should run 2 pods are creating new node 
+###########
+kubectl rollout history deploy fb
+kubectl set image deploy/fb fb=nginx:perl ## we should get the pods with new image
+kubectl edit deploy fb    ## another way of adding new version of image.
+kubectl describe deploy/fb | grep -i image  ## to get the image name
+kubectl rollout undo deploy/fb   ## to rollback    (up to 10 revision we can go back)
+###########
+purpose of deployment - if we want to do rollout , rollback.
+no of rs can be associate with one deployment, but one rs is online.
+##########
+kubectl rollout restart deploy/fb  # to restart the deploy with out any modification to the spec
+### will look into another strategy recreate   ( there is no matter of maxsurge and maxunavailability)
+## recreate has downtime not like rollingupdate.
+## During the rollout process pod is going to recreate, while recreating each time new IP is going to assign  to the pod.
+## for that we are keeping an object in front of pod to communicate with pod and DNS. that is called as service. The pods are affemeral in nature.
+# services are using labels instead of IP's to point the pods. Services are virtual objects. pods are the physical objects
+# only pods are created in the nodes. remaining all like (deploymen, rs, services) are not creating in nodes. those are store in the EDCT to manage the pods.
+# different types of services 1. ClusterIP, 2. Nodeport, 3. Loadbalancer, 4. ExternalIP/ExternalName
+# we will use above for the type of incoming traffic.
+
+
+
+
+
 
 
 
